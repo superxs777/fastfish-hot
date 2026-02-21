@@ -79,6 +79,10 @@ fastfish-hot/
 - `hot_push_config`：推送配置（关键词、渠道、时间等）
 - `hot_push_history`：推送历史
 
+## OpenClaw Skill
+
+支持作为 OpenClaw Skill 使用。将 `openclaw-skill` 复制到 OpenClaw 的 skills 目录，或通过 `openclaw.json` 的 `skills.load.extraDirs` 配置。详见 `openclaw-skill/SKILL.md`。计划支持 `clawhub install fastfish-hot` 一键安装。
+
 ## 与 fastfish 关系
 
-完全独立运行，不依赖 fastfish。数据源暂仅支持 api.pearktrue.cn。
+完全独立运行，不依赖 fastfish。数据源暂仅支持 api.pearktrue.cn。fastfish 的 Skill 中热点部分保留，并注明可使用 fastfish-hot 独立部署。
