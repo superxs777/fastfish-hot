@@ -1,0 +1,30 @@
+# 虚拟环境
+venv/
+.venv/
+env/
+
+# 数据库与数据
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# 环境配置（不提交）
+.env
+.env.local
+
+# 日志
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+*.egg
+
+# IDE
+.idea/
+.vscode/
