@@ -1,12 +1,12 @@
 ---
 name: fastfish-hot
-description: "热点推送独立项目。从 api.pearktrue.cn 拉取热点，支持飞书/钉钉/Telegram 推送。可配置拉取时间、推送时间、过滤关键词。通过 system.run 直接调用脚本，无需 MCP。当用户需要拉取热点、知乎热搜、配置热点推送或设置定时推送时使用本技能。"
+description: "热点推送独立项目。从 api.pearktrue.cn 拉取热点，支持飞书/钉钉/Telegram 推送；推送需至少配置一个渠道的 env。可配置拉取时间、推送时间、过滤关键词。通过 system.run 直接调用脚本，无需 MCP。当用户需要拉取热点、知乎热搜、配置热点推送或设置定时推送时使用本技能。"
 metadata:
   {
     "openclaw":
       {
-        "requires": { "bins": ["python3"] },
-        "credentials": "HOT_PUSH_FEISHU_WEBHOOK, HOT_PUSH_DINGTALK_WEBHOOK, HOT_PUSH_DINGTALK_SECRET(钉钉加签), HOT_PUSH_TELEGRAM_BOT_TOKEN, HOT_PUSH_TELEGRAM_CHAT_ID (可选其一或多项，存 .env；HOT_ADMIN_API_KEY 可选)"
+        "requires": { "bins": ["python3"], "env": ["HOT_PUSH_FEISHU_WEBHOOK", "HOT_PUSH_DINGTALK_WEBHOOK", "HOT_PUSH_DINGTALK_SECRET", "HOT_PUSH_TELEGRAM_BOT_TOKEN", "HOT_PUSH_TELEGRAM_CHAT_ID"] },
+        "credentials": "上述 env 至少配置一个渠道（飞书/钉钉/Telegram）即可推送；钉钉加签需 HOT_PUSH_DINGTALK_SECRET；HOT_ADMIN_API_KEY 可选，管理界面鉴权"
       }
   }
 ---
@@ -38,6 +38,7 @@ metadata:
 2. **Python 3.10+**
 3. **命令路径**：`{baseDir}` 为 fastfish-hot 的 openclaw-skill 目录，脚本路径为 `{baseDir}/../scripts/`
 4. **若 baseDir 无法替换**：使用绝对路径。ClawHub 安装通常在 `/root/.openclaw/workspace/fastfish-hot`，自建可用 `/opt/fastfish-hot`
+5. **env 与技能加载**：metadata 声明了 requires.env，OpenClaw 加载时会检查。若技能未加载，请在 openclaw.json 的 `skills.entries.fastfish-hot.env` 中配置至少一个推送渠道的凭证（可从项目 .env 复制），或确保相应环境变量在 OpenClaw 启动时已存在
 
 ## 使用方式
 
