@@ -22,11 +22,10 @@ try:
 except ImportError:
     pass
 
-from core.filter import _dedupe_by_link
+from core.filter import _dedupe_by_link, filter_items
 from core.pusher import (
     already_pushed_in_window,
     already_pushed_today,
-    filter_items,
     format_push_message,
     get_push_configs,
     get_today_raw_items,

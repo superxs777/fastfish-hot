@@ -3,9 +3,12 @@
 初始化默认推送配置。
 
 若 hot_push_config 为空，插入一条情感类配置。
-Webhook 从 .env 读取，不存数据库。
+支持 --channel feishu|dingtalk|telegram 指定推送渠道，默认 feishu。
+Webhook/Token 从 .env 读取，不存数据库；webhook_url 留空即可。
 """
 
+import argparse
+import json
 import os
 import sys
 import time
@@ -29,13 +32,22 @@ EXC = ["政治", "时政", "军事"]
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description="初始化默认推送配置")
+    parser.add_argument(
+        "--channel",
+        choices=["feishu", "dingtalk", "telegram"],
+        default="feishu",
+        help="推送渠道，默认 feishu",
+    )
+    args = parser.parse_args()
+    im_channel = args.channel
+
     with get_connection() as conn:
         cur = conn.execute("SELECT COUNT(*) FROM hot_push_config")
         if cur.fetchone()[0] > 0:
             print("hot_push_config 已有数据，跳过")
             return 0
 
-        import json
         ts = int(time.time())
         conn.execute(
             """INSERT INTO hot_push_config
@@ -49,7 +61,7 @@ def main() -> int:
                 json.dumps(INC, ensure_ascii=False),
                 json.dumps(EXC, ensure_ascii=False),
                 "07:10,14:10,18:10",
-                "feishu",
+                im_channel,
                 "",
                 30,
                 "text",
@@ -58,7 +70,12 @@ def main() -> int:
                 ts,
             ),
         )
-    print("已插入默认推送配置（情感类）。Webhook 请在设置页配置 .env")
+    ch_hint = {
+        "feishu": "HOT_PUSH_FEISHU_WEBHOOK",
+        "dingtalk": "HOT_PUSH_DINGTALK_WEBHOOK（加签需 HOT_PUSH_DINGTALK_SECRET）",
+        "telegram": "HOT_PUSH_TELEGRAM_BOT_TOKEN + HOT_PUSH_TELEGRAM_CHAT_ID",
+    }
+    print(f"已插入默认推送配置（情感类，渠道 {im_channel}）。请在 .env 配置 {ch_hint[im_channel]}")
     return 0
 
 

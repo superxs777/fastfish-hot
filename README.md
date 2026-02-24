@@ -17,12 +17,14 @@ pip install -r requirements.txt
 
 # 2. 复制环境变量
 copy .env.example .env
-# 编辑 .env，配置 HOT_PUSH_FEISHU_WEBHOOK 或钉钉/Telegram
+# 编辑 .env，配置推送渠道（飞书/钉钉/Telegram）
+# 钉钉若开启加签，需配置 HOT_PUSH_DINGTALK_SECRET
 
 # 3. 初始化数据库
 python scripts/init_db.py
 python scripts/init_default_config.py
 python scripts/init_default_push_config.py
+# 使用钉钉时：python scripts/init_default_push_config.py --channel dingtalk
 
 # 4. 启动管理服务
 python run.py
@@ -30,6 +32,7 @@ python run.py
 
 # 5. 手动测试
 python scripts/fetch_hot_items.py
+# 推送时间窗口外测试需加 HOT_PUSH_FORCE=1
 set HOT_PUSH_FORCE=1
 python scripts/push_hot_to_im.py
 ```
@@ -46,7 +49,7 @@ Windows 任务计划程序或 Linux crontab：
 10 7,14,18 * * * python d:\Python312\fastfish-hot\scripts\push_hot_to_im.py >> data\logs\hot_push.log 2>&1
 ```
 
-拉取/推送时间可在管理界面「拉取配置」中修改，修改后需手动更新 crontab。
+拉取/推送时间可在管理界面修改。`push_hot_to_im.py` 默认仅在 push_time 窗口内推送（如 07:10,14:10,18:10）；测试时可用 `HOT_PUSH_FORCE=1` 绕过。
 
 ## 管理界面
 
@@ -58,6 +61,17 @@ Windows 任务计划程序或 Linux crontab：
 | /push | 推送配置 CRUD |
 
 鉴权：配置 `HOT_ADMIN_API_KEY` 后，访问需带 `?api_key=xxx`。本地 127.0.0.1 可免鉴权。
+
+## 推送渠道配置
+
+| 渠道 | .env 变量 | 说明 |
+|------|-----------|------|
+| 飞书 | HOT_PUSH_FEISHU_WEBHOOK | Webhook URL |
+| 钉钉 | HOT_PUSH_DINGTALK_WEBHOOK | Webhook URL（含 access_token） |
+| 钉钉加签 | HOT_PUSH_DINGTALK_SECRET | 机器人开启加签时必填，程序自动生成签名 |
+| Telegram | HOT_PUSH_TELEGRAM_BOT_TOKEN, HOT_PUSH_TELEGRAM_CHAT_ID | Bot Token + Chat ID |
+
+初始化时指定渠道：`python scripts/init_default_push_config.py --channel dingtalk`
 
 ## 项目结构
 
